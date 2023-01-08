@@ -23,21 +23,6 @@ class Point():
         self.xPos2 = self.xPos + np.cos(gamma) * side
         self.yPos2 = self.yPos + np.sin(gamma) * side
 
-        baseMidX = self.xPos + self.xPos1
-        baseMidY = self.yPos + self.yPos1
-        self.movVect = [self.xPos2 - baseMidX, self.yPos2 - baseMidY]
-
-    def __add__(self, movX, movY):
-        temp = Point()
-        temp.xPos = self.xPos + movX
-        temp.yPos = self.yPos + movY
-        temp.xPos1 = self.xPos1 + movX
-        temp.yPos1 = self.yPos1 + movY
-        temp.xPos2 = self.xPos2 + movX
-        temp.yPos2 = self.yPos2 + movY
-
-        return temp
-
 
 
 
