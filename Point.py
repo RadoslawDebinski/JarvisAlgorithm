@@ -36,6 +36,25 @@ class Point():
             self.yPos2 = 0
             self.movVect = [0,0]
 
+    def _mapBorderCheck(self, xPos, yPos, xPos1, yPos1, xPos2, yPos2, movVect):
+        if np.absolute(np.amax([xPos, xPos1, xPos2])) >= 100 or np.absolute(np.amax([yPos, yPos1, yPos2])) >= 100:
+            alpha = np.radians(180)
+            rotMat = np.array(((np.cos(alpha), -np.sin(alpha)),
+                          (np.sin(alpha), np.cos(alpha))))
+            xPos = xPos - xPos2
+            xPos1 = xPos1 - xPos2
+            yPos = yPos - yPos2
+            yPos1 = yPos1 - yPos2
+            xPos, yPos = np.dot(rotMat, np.array(((xPos), (yPos))))
+            xPos1, yPos1 = np.dot(rotMat, np.array(((xPos1), (yPos1))))
+            xPos = xPos + xPos2
+            xPos1 = xPos1 + xPos2
+            yPos = yPos + yPos2
+            yPos1 = yPos1 + yPos2
+            return xPos, xPos1, yPos, yPos1, [-movVect[0], -movVect[1]]
+        else:
+            return xPos, xPos1, yPos, yPos1, movVect
+
     def __add__(self, mov):
         temp = Point(0,0,0,0)
         temp.xPos = self.xPos + mov[0]
@@ -44,27 +63,13 @@ class Point():
         temp.yPos1 = self.yPos1 + mov[1]
         temp.xPos2 = self.xPos2 + mov[0]
         temp.yPos2 = self.yPos2 + mov[1]
-        if np.absolute(np.amax([temp.xPos, temp.xPos1, temp.xPos2])) >= 100 or np.absolute(np.amax([temp.yPos, temp.yPos1, temp.yPos2])) >= 100:
-            alpha = np.radians(180)
-            rotMat = np.array(((np.cos(alpha), -np.sin(alpha)),
-                          (np.sin(alpha), np.cos(alpha))))
-            temp.xPos = temp.xPos - temp.xPos2
-            temp.xPos1 = temp.xPos1 - temp.xPos2
-            temp.yPos = temp.yPos - temp.yPos2
-            temp.yPos1 = temp.yPos1 - temp.yPos2
-            temp.xPos, temp.yPos = np.dot(rotMat, np.array(((temp.xPos), (temp.yPos))))
-            temp.xPos1, temp.yPos1 = np.dot(rotMat, np.array(((temp.xPos1), (temp.yPos1))))
-            temp.xPos = temp.xPos + temp.xPos2
-            temp.xPos1 = temp.xPos1 + temp.xPos2
-            temp.yPos = temp.yPos + temp.yPos2
-            temp.yPos1 = temp.yPos1 + temp.yPos2
-            temp.movVect = [-self.movVect[0], -self.movVect[1]]
-        else:
-            temp.movVect = self.movVect
-
+        temp.xPos, temp.xPos1, temp.yPos, temp.yPos1, temp.movVect = temp._mapBorderCheck(temp.xPos, temp.yPos,
+                                                                                          temp.xPos1, temp.yPos1,
+                                                                                          temp.xPos2, temp.yPos2,
+                                                                                          mov)
         return temp
 
-    #def _mapBorderCheck(self, ):
+
 
 
 
