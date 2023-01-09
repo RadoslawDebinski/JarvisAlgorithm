@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import Point as pt
 import JarvisAlgorithm as ja
-import hullCollison
 
 xSpan = 100
 ySpan = 100
@@ -11,6 +10,7 @@ triangleBase = 5
 triangleH = 5
 frame = 2
 pointsAmount = 20
+collArea = 3
 
 ptStruct = []
 ptX, ptY = [], []
@@ -34,6 +34,39 @@ start = []
 firstLatch = True
 topsCount = 0
 
+def hullCollision(point, hullDataX, hullDataY):
+    collision = False
+    if hullDataX != []: #point.xPos1 <= i + collArea and point.xPos1 >= i - collArea
+        for i, j in zip(hullDataX,hullDataY):
+            if (((point.xPos <= i + collArea and point.xPos >= i - collArea) and
+                (point.yPos <= j + collArea and point.yPos >= j - collArea)) or
+                ((point.xPos1 <= i + collArea and point.xPos1 >= i - collArea) and
+                 (point.yPos1 <= j + collArea and point.yPos1 >= j - collArea))):
+
+                collision = True
+                if (np.absolute(np.amax([point.xPos, point.xPos1, point.xPos2])) >= 100 or
+                    np.absolute(np.amax([point.yPos, point.yPos1, point.yPos2])) >= 100):
+                    collision = False
+
+        if collision:
+            alpha = np.radians(180)
+            rotMat = np.array(((np.cos(alpha), -np.sin(alpha)),
+                               (np.sin(alpha), np.cos(alpha))))
+            point.xPos = point.xPos - point.xPos2
+            point.xPos1 = point.xPos1 - point.xPos2
+            point.yPos = point.yPos - point.yPos2
+            point.yPos1 = point.yPos1 - point.yPos2
+            point.xPos, point.yPos = np.dot(rotMat, np.array(((point.xPos), (point.yPos))))
+            point.xPos1, point.yPos1 = np.dot(rotMat, np.array(((point.xPos1), (point.yPos1))))
+            point.xPos = point.xPos + point.xPos2
+            point.xPos1 = point.xPos1 + point.xPos2
+            point.yPos = point.yPos + point.yPos2
+            point.yPos1 = point.yPos1 + point.yPos2
+            point.movVect = [-point.movVect[0], -point.movVect[1]]
+            return point
+        else: return point
+    else: return point
+
 def anime(frame):
     global start
     global firstLatch
@@ -47,8 +80,7 @@ def anime(frame):
     i = 0
     for point in ptStruct:
         point = point + point.movVect
-        hC = hullCollison(point, hullDataX, hullDataY)
-        point = hC.detCol()
+        point = hullCollision(point, list(hull.get_xdata()), list(hull.get_ydata()))
         ptStruct[i] = point
         triX.append([point.xPos, point.xPos1, point.xPos2, point.xPos])
         pointsX.append([point.xPos, point.xPos1, point.xPos2])
@@ -70,11 +102,11 @@ def anime(frame):
     else:
         start = [hullDataX[-1],hullDataY[-1]]
         hullX, hullY, topsCount = JA.calculate(start, topsCount)
-        hull.set_data(np.concatenate([hullDataX, np.linspace(hullDataX[-1],hullX, 3)]),
-                      np.concatenate([hullDataY, np.linspace(hullDataY[-1],hullY, 3)]))
+        hull.set_data(np.concatenate([hullDataX, np.linspace(hullDataX[-1],hullX, 200)]),
+                      np.concatenate([hullDataY, np.linspace(hullDataY[-1],hullY, 200)]))
 
 
-anim = FuncAnimation(fig, anime, frames=400, interval=2000)
+anim = FuncAnimation(fig, anime, frames=4000, interval=200)
 plt.title('Second laboratory WNO')
 plt.xlabel('X Axis')
 plt.ylabel('Y Axis')
