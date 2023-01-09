@@ -30,32 +30,33 @@ fig, ax = plt.subplots()
 ax.set_xlim(-xSpan-frame, xSpan+frame)
 ax.set_ylim(-ySpan-frame, ySpan+frame)
 
-points, = ax.plot(ptX, ptY, 'bo', markersize=2)
+#points, = ax.plot(ptX, ptY, 'bo', markersize=2)
 hullDataX = []
 hullDataY = []
 #hullData, = ax.plot([], [], marker='o', color='green', markersize=3)
-triangles, = ax.plot([], [], marker='o', color='black', markersize=3)
+triangles = []
+for _ in range(0, pointsAmount):
+    triangles.append(ax.plot([], [], marker='o', color='black', markersize=3)[0])
 
-def anime(frame, tri):
-
+def anime(frame):
     triX = []
     triY = []
-    global ptStruct
 
+    i = 0
     for point in ptStruct:
         point = point + point.movVect
+        ptStruct[i] = point
         triX.append([point.xPos, point.xPos1, point.xPos2, point.xPos])
         triY.append([point.yPos, point.yPos1, point.yPos2, point.yPos])
+        i += 1
 
-    np.concatenate(np.array(triX), axis = 0)
-    np.concatenate(np.array(triY), axis=0)
-
-    tri.set_data(list(triX), list(triY))
+    for x, y, i in zip(triX, triY, range(0, pointsAmount)):
+        triangles[i].set_data(x, y)
     # hullDataX.append(hullX[frame])
     # hullDataY.append(hullY[frame])
     # hulldata.set_data(hullDataX, hullDataY)
 
-anim = FuncAnimation(fig, anime, frames=400, fargs=triangles, interval=100)
+anim = FuncAnimation(fig, anime, frames=400, interval=100)
 plt.title('Second laboratory WNO')
 plt.xlabel('X Axis')
 plt.ylabel('Y Axis')
