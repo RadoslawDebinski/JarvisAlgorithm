@@ -44,8 +44,8 @@ start, = ax.plot(hullX[0],hullY[0], 'ro', markersize=4)
 hullPoints, = ax.plot(hullX, hullY, 'co', markersize=1)
 
 def anime(frame, Hullx, Hully, Hx, Hy, hulldata):
-    hullDataX.append(hullX[frame])
-    hullDataY.append(hullY[frame])
+    Hx.append(Hullx[frame])
+    Hy.append(Hully[frame])
     hulldata.set_data(hullDataX, hullDataY)
 
 anim = FuncAnimation(fig, anime, frames=range(len(hullX)), fargs=(hullX, hullY, hullDataX, hullDataY, hullData), interval=100)
