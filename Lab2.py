@@ -11,7 +11,7 @@ triangleH = 5
 frame = 20
 trianglesAmount = 20
 collArea = 3
-fear = 2
+fear = 5
 
 ptStruct = []
 ptX, ptY = [], []
@@ -107,7 +107,7 @@ def anime(frame):
                       np.concatenate([hullDataY, np.linspace(hullDataY[-1],hullY, 200)]))
 
 
-anim = FuncAnimation(fig, anime, frames=4000, interval=200)
+anim = FuncAnimation(fig, anime, frames=4000, interval=100)
 plt.title('Second laboratory WNO')
 plt.xlabel('X Axis')
 plt.ylabel('Y Axis')
