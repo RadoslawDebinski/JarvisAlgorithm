@@ -24,11 +24,23 @@ class JarAlg():
             iter += 1
         return topId
 
+    def _findBottom(self, start):
+        self.start
+        tempPoitsY = list(self.pointsy)
+        tempPoitsY.append(start[1])
+        bottomId, iter = int(0), int(0)
+        for i in tempPoitsY:
+            if i < tempPoitsY[bottomId]:
+                bottomId = iter
+            iter += 1
+        return bottomId
+
 
     def calculate(self, start, topsCount):
         self.start = start
         self.topsCount = topsCount
         topId = JarAlg._findTop(self, self.start)
+        bottomId = JarAlg._findBottom(self, self.start)
 
         angles = []
         for i in range(0,len(self.pointsy)):
@@ -36,7 +48,8 @@ class JarAlg():
 
         if topId == len(self.pointsy):
             self.topsCount += 1
-
+        if bottomId == len(self.pointsy):
+            self.topsCount += 1
         if self.topsCount % 2 == 1:
             nextId = np.argmin(angles)
         else:

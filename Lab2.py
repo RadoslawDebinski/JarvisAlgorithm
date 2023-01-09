@@ -1,21 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import Point as pt
+import Triangle as tr
 import JarvisAlgorithm as ja
 
 xSpan = 100
 ySpan = 100
 triangleBase = 5
 triangleH = 5
-frame = 2
-pointsAmount = 20
+frame = 20
+trianglesAmount = 20
 collArea = 3
+fear = 2
 
 ptStruct = []
 ptX, ptY = [], []
-for _ in range (0,pointsAmount):
-    point = pt.Point(xSpan,ySpan, triangleBase, triangleH)
+for _ in range (0,trianglesAmount):
+    point = tr.Triangle(xSpan,ySpan, triangleBase, triangleH)
     ptStruct.append(point)
 
 fig, ax = plt.subplots()
@@ -27,7 +28,7 @@ hullDataX = []
 hullDataY = []
 hull, = ax.plot([], [], marker='o', color='green', markersize=2)
 triangles = []
-for _ in range(0, pointsAmount):
+for _ in range(0, trianglesAmount):
     triangles.append(ax.plot([], [], marker='o', color='black', markersize=1)[0])
 
 start = []
@@ -88,7 +89,7 @@ def anime(frame):
         pointsY.append([point.yPos, point.yPos1, point.yPos2])
         i += 1
 
-    for x, y, i in zip(triX, triY, range(0, pointsAmount)):
+    for x, y, i in zip(triX, triY, range(0, trianglesAmount)):
         triangles[i].set_data(x, y)
 
     JA = ja.JarAlg(np.array(pointsX),np.array(pointsY))

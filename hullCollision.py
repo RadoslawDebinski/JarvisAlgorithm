@@ -1,5 +1,5 @@
 import numpy as np
-import Point as pt
+import Triangle as pt
 
 class hullCollision():
     def __init__(self, point, hullDataX, hullDataY):
