@@ -46,7 +46,7 @@ hullPoints, = ax.plot(hullX, hullY, 'co', markersize=1)
 def anime(frame, Hullx, Hully, Hx, Hy, hulldata):
     Hx.append(Hullx[frame])
     Hy.append(Hully[frame])
-    hulldata.set_data(hullDataX, hullDataY)
+    hulldata.set_data(Hx, Hy)
 
 anim = FuncAnimation(fig, anime, frames=range(len(hullX)), fargs=(hullX, hullY, hullDataX, hullDataY, hullData), interval=100)
 plt.title('Second laboratory WNO')
