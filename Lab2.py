@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import Point as pt
 import JarvisAlgorithm as ja
+import hullCollison
 
 xSpan = 100
 ySpan = 100
@@ -31,16 +32,23 @@ for _ in range(0, pointsAmount):
 
 start = []
 firstLatch = True
+topsCount = 0
 
 def anime(frame):
     global start
     global firstLatch
+    global topsCount
+
     triX, pointsX = [[], []]
     triY, pointsY = [[], []]
+
+    hullDataX, hullDataY = [list(hull.get_xdata()), list(hull.get_ydata())]
 
     i = 0
     for point in ptStruct:
         point = point + point.movVect
+        hC = hullCollison(point, hullDataX, hullDataY)
+        point = hC.detCol()
         ptStruct[i] = point
         triX.append([point.xPos, point.xPos1, point.xPos2, point.xPos])
         pointsX.append([point.xPos, point.xPos1, point.xPos2])
@@ -51,7 +59,6 @@ def anime(frame):
     for x, y, i in zip(triX, triY, range(0, pointsAmount)):
         triangles[i].set_data(x, y)
 
-    hullDataX, hullDataY = [list(hull.get_xdata()), list(hull.get_ydata())]
     JA = ja.JarAlg(np.array(pointsX),np.array(pointsY))
     if firstLatch:
         start = JA.findStart()
@@ -62,12 +69,12 @@ def anime(frame):
         hull.set_data(hullDataX, hullDataY)
     else:
         start = [hullDataX[-1],hullDataY[-1]]
-        hullX, hullY = JA.calculate(start)
-        hull.set_data(np.concatenate([hullDataX, np.linspace(hullDataX[-1],hullX, 200)]),
-                      np.concatenate([hullDataY, np.linspace(hullDataY[-1],hullY, 200)]))
+        hullX, hullY, topsCount = JA.calculate(start, topsCount)
+        hull.set_data(np.concatenate([hullDataX, np.linspace(hullDataX[-1],hullX, 3)]),
+                      np.concatenate([hullDataY, np.linspace(hullDataY[-1],hullY, 3)]))
 
 
-anim = FuncAnimation(fig, anime, frames=400, interval=500)
+anim = FuncAnimation(fig, anime, frames=400, interval=2000)
 plt.title('Second laboratory WNO')
 plt.xlabel('X Axis')
 plt.ylabel('Y Axis')

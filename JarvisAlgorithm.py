@@ -4,8 +4,6 @@ class JarAlg():
     def __init__(self, pointsx, pointsy):
         self.pointsx = np.concatenate(pointsx, axis = 0)
         self.pointsy = np.concatenate(pointsy, axis = 0)
-        # self.pointsx = np.stack(pointsx)
-        # self.pointsy = np.stack(pointsy)
 
     def findStart(self):
         startId, iter = int(0), int(0)
@@ -27,18 +25,19 @@ class JarAlg():
         return topId
 
 
-    def calculate(self, start):
+    def calculate(self, start, topsCount):
         self.start = start
+        self.topsCount = topsCount
         topId = JarAlg._findTop(self, self.start)
-        topRiched = False
 
         angles = []
         for i in range(0,len(self.pointsy)):
             angles.append(np.arctan2(self.pointsy[i] - start[1], self.pointsx[i] - start[0]))
 
         if topId == len(self.pointsy):
-            topRiched = True
-        if topRiched:
+            self.topsCount += 1
+
+        if self.topsCount % 2 == 1:
             nextId = np.argmin(angles)
         else:
             angles = np.array(angles)
@@ -46,6 +45,6 @@ class JarAlg():
             minVal = np.amin(angles[moreZeroAnglesId == True])
             nextId = int(np.where(angles == minVal)[0])
 
-        return [self.pointsx[nextId], self.pointsy[nextId]]
+        return [self.pointsx[nextId], self.pointsy[nextId], self.topsCount]
 
 
